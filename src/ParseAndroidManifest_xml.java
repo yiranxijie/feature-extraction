@@ -1,8 +1,15 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,76 +20,88 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
+/**
+ * AndroidManifest.xmlÈ¨ÏŞÌØÕ÷³éÈ¡Ä£¿é£¬Í¨¹ı½âÎöAndroidManifest.xmlÎÄ¼ş£¬
+ * ³éÈ¡ËùÓĞuses-permission±ê¼ÇÈ¨ÏŞ£¬Êä³öµ½Ö¸¶¨¸ñÊ½.outputÎÄ¼şÖĞ
+ * 
+ * @author Administrator
+ * 
+ */
 public class ParseAndroidManifest_xml {
 
-	public static String path="D:\\tao\\test\\apktest\\AndroidManifest.xml";
-	
+	// public static String path="D:\\tao\\test\\apktest\\AndroidManifest.xml";
+
+	public static String appPath = "D:\\tao\\apkSample\\py\\"; // ±£´æÂ·¾¶
+
+	public static List<String> pathList = new ArrayList<String>(); // AndroidManifest.xmlµÄÂ·¾¶¼¯ºÏ
+
 	public static void main(String args[]) {
-		  Element element = null;
-		  File f = new File(path);
-		  DocumentBuilder db = null;
-		  DocumentBuilderFactory dbf = null;
-		  String per_str="";
-		  try {
-			   dbf = DocumentBuilderFactory.newInstance();
-			   db = dbf.newDocumentBuilder();
-			   Document document = db.parse(f);
-			   NodeList permissions = document.getElementsByTagName("uses-permission");
-			   
-			 //éå†æ¯ä¸€ä¸ªpermissionèŠ‚ç‚¹
-			   for (int i = 0; i < permissions.getLength(); i++) {
-				   Node permission = permissions.item(i);
-				   //è·å–permissionèŠ‚ç‚¹çš„æ‰€æœ‰å±æ€§é›†åˆ
-				   NamedNodeMap attrs = permission.getAttributes();
-				   //éå†permissionçš„å±æ€§
-				   for (int j = 0; j < attrs.getLength(); j++) {
-					   //é€šè¿‡item(index)æ–¹æ³•è·å–permissionèŠ‚ç‚¹çš„æŸä¸€ä¸ªå±æ€§
-					   Node attr = attrs.item(j);
-					   String permissionVal=attr.getNodeValue().split("\\.")[2];
-					   //è·å–å±æ€§å
-//					   System.out.print("å±æ€§åï¼š" + attr.getNodeName());
-//					   //è·å–å±æ€§å€¼
-//					   System.out.println("--å±æ€§å€¼" + attr.getNodeValue());
-//					   System.out.println("--å±æ€§å€¼" + attr.getNodeValue().substring(18));
-					   per_str+=permissionVal+ ".";
-				   }
-			  }
-			   System.out.println(per_str);
-			   writeToOutput(per_str);
-		  }catch (Exception e) {
-		   e.printStackTrace();
-		 }
+		try {
+			Process pr = Runtime.getRuntime().exec("python " + appPath + "apkParseAndroidManifest_xml.py");
+			BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+			String line;
+			while ((line = in.readLine()) != null) {
+				line = line.replaceAll("/", "\\\\"); // °ÑÂ·¾¶ÖĞµÄ·´Ğ±¸Ü"/"Ìæ»»Îª"\\"
+				pathList.add(line);
+			}
+			in.close();
+			pr.waitFor();
+			parsexml(pathList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// ½âÎöxml,²¢½«permissionÊôĞÔÖµÊä³öµ½permission.csvÎÄ¼şÖĞ
+	private static void parsexml(List<String> pathList) throws Exception {
+		StringBuffer per_str = new StringBuffer(); // ´ıĞ´ÈëÊı¾İ
+		File file = new File("D:\\tao\\apkSample\\permission.csv"); // ´ıĞ´ÈëÊı¾İµÄÎÄ¼ş
+		FileOutputStream out = null;
+		if (file.exists()) {
+		} else {
+			file.createNewFile();// ²»´æÔÚÔò´´½¨
 		}
 
-	//å°†permissionå±æ€§å€¼è¾“å‡ºåˆ°permission.outputæ–‡ä»¶ä¸­
-	private static void writeToOutput(String permissionStr) {
-		String str = new String(); //åŸæœ‰txtå†…å®¹  
-        String s1 = new String();//å†…å®¹æ›´æ–°
-		try {  
-            File f = new File("D:\\tao\\test\\apktest\\permission.output");  
-            if (f.exists()) {  
-                System.out.println("æ–‡ä»¶å­˜åœ¨");  
-            } else {  
-                System.out.println("æ–‡ä»¶ä¸å­˜åœ¨");  
-                f.createNewFile();// ä¸å­˜åœ¨åˆ™åˆ›å»º  
-            }  
-            BufferedReader input = new BufferedReader(new FileReader(f));  
-  
-            while ((str = input.readLine()) != null) {  
-                s1 += str;  
-            }  
-            System.out.println(s1);  
-            input.close();  
-            s1 += permissionStr;  
-            String []strs=s1.split("\\.");
-  
-            BufferedWriter output = new BufferedWriter(new FileWriter(f));  
-            output.write(s1);  
-            output.close();  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-  
-        } 
+		out = new FileOutputStream(file, false);
+
+		for (String path : pathList) {
+			Element element = null;
+			File f = new File(path);
+			DocumentBuilder db = null;
+			DocumentBuilderFactory dbf = null;
+			String appname = path.split("\\\\")[2];
+			per_str.append(appname + ".apk");
+
+			dbf = DocumentBuilderFactory.newInstance();
+			db = dbf.newDocumentBuilder();
+			Document document = db.parse(f);
+			NodeList permissions = document.getElementsByTagName("uses-permission");
+
+			// ±éÀúÃ¿Ò»¸öpermission½Úµã
+			for (int i = 0; i < permissions.getLength(); i++) {
+				Node permission = permissions.item(i);
+				// /»ñÈ¡permission½ÚµãµÄËùÓĞÊôĞÔ¼¯ºÏ
+				NamedNodeMap attrs = permission.getAttributes();
+				// ±éÀúpermissionµÄÊôĞÔ
+				for (int j = 0; j < attrs.getLength(); j++) {
+					// Í¨¹ıitem(index)·½·¨»ñÈ¡permission½ÚµãµÄÄ³Ò»¸öÊôĞÔ
+					Node attr = attrs.item(j);
+					String permissionVal = attr.getNodeValue().split("\\.")[2];
+					// »ñÈ¡ÊôĞÔÃû
+					// System.out.print("ÊôĞÔÃû£º" + attr.getNodeName());
+					// //»ñÈ¡ÊôĞÔÖµ
+					// System.out.println("--ÊôĞÔÖµ" + attr.getNodeValue());
+					// System.out.println("--ÊôĞÔÖµ" +
+					// attr.getNodeValue().substring(18));
+					per_str.append("," + permissionVal);
+				}
+			}
+			per_str.append("\r\n"); // Ã¿½âÎöÍêÒ»¸öapk£¬Êä³ö»»ĞĞ,×¢Òâ×îºó»á¶à³öÒ»ĞĞ£¬ËùÒÔÑ­»·×îºó¼Ó¸ötrim()³ıÈ¥Ä©Î²µÄ»»ĞĞ·û
+			out.flush();
+		}
+		out.write(per_str.toString().trim().getBytes("gbk")); // ×¢ÒâĞèÒª×ª»»¶ÔÓ¦µÄ×Ö·û¼¯
+		out.close();
+		System.out.println("½âÎö³É¹¦¡£¡£¡£");
 	}
+
 }

@@ -10,7 +10,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-
+/**
+ * 从apk文件中抽取classes.dex文件，但发现抽取出来的文件大小为-1，且不能用baksmali反编译
+ * @author Administrator
+ *
+ */
 public class GetClasses_dex {
 
 	    public static void main(String[] args) throws Exception {
