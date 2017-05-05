@@ -4,11 +4,12 @@
 import os,sys
 import urllib2
 import re
+import time
 
 
-localname="E:/apk2/"
+localname="E:/apk3/"
 txt_path = "D:/tao/apkSample/testUrl.txt"
-error_path="E:/error2.txt"
+error_path="E:/error3.txt"
 
 
 def download( output ):
@@ -21,6 +22,8 @@ def download( output ):
 			continue
 		else:
 			app_name=lines[i].split("\t")[0]
+			if ( os.path.exists(output+app_name+".apk") ):	#如果output路径下存在同名文件，则修改当前名字加上当前时间戳保存
+				app_name += "_"+str( time.time() )
 			if( app_name.find("/") ): #包含目录符号
 				p=re.compile(r'\/')
 				app_name=p.sub('_',app_name)
@@ -34,12 +37,12 @@ def download( output ):
 			url=lines[i].split("\t")[4]
 			#print app_name+"\t"+basicurl
 			try:
-				print ("downloading..." + url + "  ** file is : "+ output)
+				print (str(i)+"_downloading..."+ url + "  ** file is : "+ output)
 				response = urllib2.urlopen(url)
 				type=response.info().gettype()
 				newurl=response.geturl()
 				if( type.endswith(".package-archive")):		#正常的apk
-					apkpath=output+app_name+".apk"
+					apkpath = output+app_name+".apk"
 					resourceFile = open(apkpath, "wb")
 					resourceFile.write(response.read())
 					f2.write(app_name+"\t"+basicurl+"\t"+"normal:this is a normal apk"+"\n")
