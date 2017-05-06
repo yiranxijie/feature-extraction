@@ -86,7 +86,12 @@ public class ParseAndroidManifest_xml {
 				for (int j = 0; j < attrs.getLength(); j++) {
 					// 通过item(index)方法获取permission节点的某一个属性
 					Node attr = attrs.item(j);
-					String permissionVal = attr.getNodeValue().split("\\.")[2];
+					String permissionVal = "";
+					if( attr.getNodeValue().startsWith("android.permission") ){
+						permissionVal = attr.getNodeValue().split("\\.")[2];
+					}else if( attr.getNodeValue().startsWith("com.android.launcher.permission") ){
+						permissionVal = attr.getNodeValue().split("\\.")[4];
+					}
 					// 获取属性名
 					// System.out.print("属性名：" + attr.getNodeName());
 					// //获取属性值
