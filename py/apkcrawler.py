@@ -38,7 +38,7 @@ def download( output ):
 			#print app_name+"\t"+basicurl
 			try:
 				print (str(i)+"_downloading..."+ url + "  ** file is : "+ output)
-				response = urllib2.urlopen(url)
+				response = urllib2.urlopen(url,timeout=1200)	#设置urlopen超时timeout时限，单位为秒
 				type=response.info().gettype()
 				newurl=response.geturl()
 				if( type.endswith(".package-archive")):		#正常的apk
