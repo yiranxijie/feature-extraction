@@ -1,4 +1,4 @@
-# coding=gbk
+# coding=utf-8
 
 import os,sys
 import urllib2
@@ -11,20 +11,21 @@ import re
 	# else:
 		# print test_list[i]
 		
-txt_path="D:/tao/apkSample/downloadUrl(1).txt"
-localname="D:/tao/apkSample/test2.apk"
-basicurl="http://static.apk.hiapk.com/Download.aspx?aid=3716"
+
+localname="D:/tao/apkSample/test.apk"
+basicurl="http://shouji.360tpcdn.com/360sj/jifeng/162670_51ed3e93-a586-46e4-ad2b-c2f17a7ab26f.apk"
 
 
 def download(url, output):
 
 	try:
-		print ("downloading..." + url + "  ** file is : "+ output)
+		print ("downloading..." + url + "  ** file is : "+ output.decode("utf-8").encode("gbk"))
 		response = urllib2.urlopen(url)
 		newurl=response.geturl()
+		print response.info()
 		print response.info().gettype()
-		type=response.info().gettype()
-		if( type.endswith(".package-archive")):
+		type=response.info().gettype() 
+		if ( type.startswith( "application" ) ):
 			print("this is a normal apk")
 		elif( type.endswith("text/html") ):
 			print("this is a error apk")
