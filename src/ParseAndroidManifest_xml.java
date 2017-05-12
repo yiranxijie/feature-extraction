@@ -21,8 +21,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * AndroidManifest.xmlÈ¨ÏŞÌØÕ÷³éÈ¡Ä£¿é£¬Í¨¹ı½âÎöAndroidManifest.xmlÎÄ¼ş£¬
- * ³éÈ¡ËùÓĞuses-permission±ê¼ÇÈ¨ÏŞ£¬Êä³öµ½Ö¸¶¨¸ñÊ½.outputÎÄ¼şÖĞ
+ * AndroidManifest.xmlæƒé™ç‰¹å¾æŠ½å–æ¨¡å—ï¼Œé€šè¿‡è§£æAndroidManifest.xmlæ–‡ä»¶ï¼Œ
+ * æŠ½å–æ‰€æœ‰uses-permissionæ ‡è®°æƒé™ï¼Œè¾“å‡ºåˆ°æŒ‡å®šæ ¼å¼.outputæ–‡ä»¶ä¸­
  * 
  * @author Administrator
  * 
@@ -31,9 +31,9 @@ public class ParseAndroidManifest_xml {
 
 	// public static String path="D:\\tao\\test\\apktest\\AndroidManifest.xml";
 
-	public static String appPath = "D:\\tao\\apkSample\\py\\"; // ±£´æÂ·¾¶
+	public static String appPath = "D:\\tao\\apkSample\\py\\"; // ä¿å­˜è·¯å¾„
 
-	public static List<String> pathList = new ArrayList<String>(); // AndroidManifest.xmlµÄÂ·¾¶¼¯ºÏ
+	public static List<String> pathList = new ArrayList<String>(); // AndroidManifest.xmlçš„è·¯å¾„é›†åˆ
 
 	public static void main(String args[]) {
 		try {
@@ -41,7 +41,7 @@ public class ParseAndroidManifest_xml {
 			BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 			String line;
 			while ((line = in.readLine()) != null) {
-				line = line.replaceAll("/", "\\\\"); // °ÑÂ·¾¶ÖĞµÄ·´Ğ±¸Ü"/"Ìæ»»Îª"\\"
+				line = line.replaceAll("/", "\\\\"); // æŠŠè·¯å¾„ä¸­çš„åæ–œæ "/"æ›¿æ¢ä¸º"\\"
 				pathList.add(line);
 			}
 			in.close();
@@ -52,14 +52,14 @@ public class ParseAndroidManifest_xml {
 		}
 	}
 
-	// ½âÎöxml,²¢½«permissionÊôĞÔÖµÊä³öµ½permission.csvÎÄ¼şÖĞ
+	// è§£æxml,å¹¶å°†permissionå±æ€§å€¼è¾“å‡ºåˆ°permission.csvæ–‡ä»¶ä¸­
 	private static void parsexml(List<String> pathList) throws Exception {
-		StringBuffer per_str = new StringBuffer(); // ´ıĞ´ÈëÊı¾İ
-		File file = new File("D:\\tao\\apkSample\\permission.csv"); // ´ıĞ´ÈëÊı¾İµÄÎÄ¼ş
+		StringBuffer per_str = new StringBuffer(); // å¾…å†™å…¥æ•°æ®
+		File file = new File("D:\\tao\\apkSample\\permission.csv"); // å¾…å†™å…¥æ•°æ®çš„æ–‡ä»¶
 		FileOutputStream out = null;
 		if (file.exists()) {
 		} else {
-			file.createNewFile();// ²»´æÔÚÔò´´½¨
+			file.createNewFile();// ä¸å­˜åœ¨åˆ™åˆ›å»º
 		}
 
 		out = new FileOutputStream(file, false);
@@ -77,14 +77,14 @@ public class ParseAndroidManifest_xml {
 			Document document = db.parse(f);
 			NodeList permissions = document.getElementsByTagName("uses-permission");
 
-			// ±éÀúÃ¿Ò»¸öpermission½Úµã
+			// éå†æ¯ä¸€ä¸ªpermissionèŠ‚ç‚¹
 			for (int i = 0; i < permissions.getLength(); i++) {
 				Node permission = permissions.item(i);
-				// /»ñÈ¡permission½ÚµãµÄËùÓĞÊôĞÔ¼¯ºÏ
+				// /è·å–permissionèŠ‚ç‚¹çš„æ‰€æœ‰å±æ€§é›†åˆ
 				NamedNodeMap attrs = permission.getAttributes();
-				// ±éÀúpermissionµÄÊôĞÔ
+				// éå†permissionçš„å±æ€§
 				for (int j = 0; j < attrs.getLength(); j++) {
-					// Í¨¹ıitem(index)·½·¨»ñÈ¡permission½ÚµãµÄÄ³Ò»¸öÊôĞÔ
+					// é€šè¿‡item(index)æ–¹æ³•è·å–permissionèŠ‚ç‚¹çš„æŸä¸€ä¸ªå±æ€§
 					Node attr = attrs.item(j);
 					String permissionVal = "";
 					if( attr.getNodeValue().startsWith("android.permission") ){
@@ -92,21 +92,21 @@ public class ParseAndroidManifest_xml {
 					}else if( attr.getNodeValue().startsWith("com.android.launcher.permission") ){
 						permissionVal = attr.getNodeValue().split("\\.")[4];
 					}
-					// »ñÈ¡ÊôĞÔÃû
-					// System.out.print("ÊôĞÔÃû£º" + attr.getNodeName());
-					// //»ñÈ¡ÊôĞÔÖµ
-					// System.out.println("--ÊôĞÔÖµ" + attr.getNodeValue());
-					// System.out.println("--ÊôĞÔÖµ" +
+					// è·å–å±æ€§å
+					// System.out.print("å±æ€§åï¼š" + attr.getNodeName());
+					// //è·å–å±æ€§å€¼
+					// System.out.println("--å±æ€§å€¼" + attr.getNodeValue());
+					// System.out.println("--å±æ€§å€¼" +
 					// attr.getNodeValue().substring(18));
 					per_str.append("," + permissionVal);
 				}
 			}
-			per_str.append("\r\n"); // Ã¿½âÎöÍêÒ»¸öapk£¬Êä³ö»»ĞĞ,×¢Òâ×îºó»á¶à³öÒ»ĞĞ£¬ËùÒÔÑ­»·×îºó¼Ó¸ötrim()³ıÈ¥Ä©Î²µÄ»»ĞĞ·û
+			per_str.append("\r\n"); // æ¯è§£æå®Œä¸€ä¸ªapkï¼Œè¾“å‡ºæ¢è¡Œ,æ³¨æ„æœ€åä¼šå¤šå‡ºä¸€è¡Œï¼Œæ‰€ä»¥å¾ªç¯æœ€ååŠ ä¸ªtrim()é™¤å»æœ«å°¾çš„æ¢è¡Œç¬¦
 			out.flush();
 		}
-		out.write(per_str.toString().trim().getBytes("gbk")); // ×¢ÒâĞèÒª×ª»»¶ÔÓ¦µÄ×Ö·û¼¯
+		out.write(per_str.toString().trim().getBytes("gbk")); // æ³¨æ„éœ€è¦è½¬æ¢å¯¹åº”çš„å­—ç¬¦é›†
 		out.close();
-		System.out.println("½âÎö³É¹¦¡£¡£¡£");
+		System.out.println("è§£ææˆåŠŸã€‚ã€‚ã€‚");
 	}
 
 }

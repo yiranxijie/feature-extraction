@@ -11,7 +11,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 /**
- * ´ÓapkÎÄ¼şÖĞ³éÈ¡classes.dexÎÄ¼ş£¬µ«·¢ÏÖ³éÈ¡³öÀ´µÄÎÄ¼ş´óĞ¡Îª-1£¬ÇÒ²»ÄÜÓÃbaksmali·´±àÒë
+ * ä»apkæ–‡ä»¶ä¸­æŠ½å–classes.dexæ–‡ä»¶ï¼Œä½†å‘ç°æŠ½å–å‡ºæ¥çš„æ–‡ä»¶å¤§å°ä¸º-1ï¼Œä¸”ä¸èƒ½ç”¨baksmaliåç¼–è¯‘
  * @author Administrator
  *
  */

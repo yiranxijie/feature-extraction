@@ -9,22 +9,22 @@ import java.io.OutputStreamWriter;
 import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 
 /**
- * apkÔ¤´¦ÀíÄ£¿é£¬Í¨¹ıapktool¹¤¾ß½âÑ¹.apkÎÄ¼şµÃµ½ÏàÓ¦µÄÎÄ¼ş
+ * apké¢„å¤„ç†æ¨¡å—ï¼Œé€šè¿‡apktoolå·¥å…·è§£å‹.apkæ–‡ä»¶å¾—åˆ°ç›¸åº”çš„æ–‡ä»¶
  * 
  * @author tao
  * 
  */
 public class APK_Pretreatment {
 
-	public static String path = "C:\\Windows"; // apktoolÂ·¾¶
+	public static String path = "C:\\Windows"; // apktoolè·¯å¾„
 
-	public static String appPath = "D:\\tao\\apkSample\\py\\"; // ±£´æÂ·¾¶
+	public static String appPath = "D:\\tao\\apkSample\\py\\"; // ä¿å­˜è·¯å¾„
 
 	public static void main(String args[]) throws IOException {
 		
 	}
 
-	//javaÔËĞĞpython½Å±¾½âÑ¹apk
+	//javaè¿è¡Œpythonè„šæœ¬è§£å‹apk
 	public void decompress() {
 		Process process = null;
 		try {
@@ -33,9 +33,9 @@ public class APK_Pretreatment {
 
 			process = Runtime.getRuntime().exec("python " + appPath + "apkPretreatment.py");
 			if (process.waitFor() != 0) {
-				System.out.println("½âÑ¹Ê§°Ü¡£¡£¡£");
+				System.out.println("è§£å‹å¤±è´¥ã€‚ã€‚ã€‚");
 			}else{
-				System.out.println("½âÑ¹Íê³É¡£¡£¡£");
+				System.out.println("è§£å‹å®Œæˆã€‚ã€‚ã€‚");
 			}
 
 		} catch (Exception e) {
