@@ -7,9 +7,9 @@ import re
 import time
 
 
-localname="E:/20170511_apk/"
+localname="D:/apk3/"
 txt_path = "D:/tao/apkSample/20170511.txt"
-error_path="E:/20170511_log.txt"
+error_path="D:/apk3_log.txt"
 
 
 def download( output ):
@@ -17,7 +17,7 @@ def download( output ):
 	f = open(txt_path,"r")  
 	f2=open(error_path,"w")
 	lines = f.readlines()
-	for i in range( len(lines) ):
+	for i in range( 20000,len(lines) ):
 		if( i==0 ):
 			continue
 		else:
@@ -36,28 +36,34 @@ def download( output ):
 				app_name=p.sub('_',app_name)
 			basicurl=lines[i].split("\t")[3].strip('\n')
 			url=lines[i].split("\t")[3]
+			app_url_name = basicurl.split("/")[-1]
 			#print app_name+"\t"+basicurl
-			try:
-				print (str(i)+"_downloading..."+ url + "  ** file is : "+ output)
-				response = urllib2.urlopen(url,timeout=120)	#设置urlopen超时timeout时限，单位为秒
-				type=response.info().gettype()
-				newurl=response.geturl()
-				
-				apkpath = output+app_name+".apk"
-				resourceFile = open(apkpath, "wb")
-				resourceFile.write(response.read())
-				resourceFile.close()
-				if( type.startswith( "application" ) ):		#正常的apk，目前除了404_error、contentType_error、exception_error几种不能下载的类型，都应该是有效的apk，至于unknow_error里面，可能包含有正常的apk
-					f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"normal:this is a normal apk"+"\n")
-				elif( newurl.endswith("404.html") ):	#最终地址转向一个404页面
-					#print "404"
-					f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"404_error:from newurl endswith 404.html"+"\n")
-				elif( type.endswith("text/html") ):		#无效的apk
-					f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"contentType_error:from content type text/html"+"\n")
-				else:
-					f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"unknow_error:unknow error"+"\n")	#其中可能含有正常apk
-			except:		#urlopen异常
-				# print e.code,";"+e.reason 
-				f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"exception_error:from urlopen exception"+"\n")
+			for j in range(1,5):	#可能网络堵塞，引起urlopen异常，可以多试几次
+				try:
+					print (str(i)+"_downloading..."+ url + "  ** file is : "+ output)
+					response = urllib2.urlopen(url,timeout=60)	#设置urlopen超时timeout时限，单位为秒
+					type=response.info().gettype()
+					newurl=response.geturl()
+					
+					apkpath = output+app_url_name
+					resourceFile = open(apkpath, "wb")
+					resourceFile.write(response.read())
+					resourceFile.close()
+					if( type.startswith( "application" ) ):		#正常的apk，目前除了404_error、contentType_error、exception_error几种不能下载的类型，都应该是有效的apk，至于unknow_error里面，可能包含有正常的apk
+						print "normal"
+					elif( newurl.endswith("404.html") ):	#最终地址转向一个404页面
+						#print "404"
+						f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"404_error:from newurl endswith 404.html"+"\n")
+					elif( type.endswith("text/html") ):		#无效的apk
+						f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"contentType_error:from content type text/html"+"\n")
+					else:
+						f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"unknow_error:unknow error"+"\n")	#其中可能含有正常apk
+					break
+				except urllib2.URLError, e:		#urlopen异常
+					# print e.code,";"+e.reason 
+					if j<5:
+						continue
+					else:
+						f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"exception_error:from urlopen exception"+"(the e.code is "+e.code+",the e.reason is "+e.reason+")"+"\n")
 			
 download( localname )
