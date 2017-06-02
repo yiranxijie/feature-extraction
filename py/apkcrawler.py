@@ -7,9 +7,9 @@ import re
 import time
 
 
-localname="D:/apk3/"
-txt_path = "D:/tao/apkSample/20170511.txt"
-error_path="D:/apk3_log.txt"
+localname="Z:/apkSample/50372/"
+txt_path = "Z:/apkSample/links/20170511.txt"
+error_path="Z:/apkSample/50372_log.txt"
 
 
 def download( output ):
@@ -17,7 +17,8 @@ def download( output ):
 	f = open(txt_path,"r")  
 	f2=open(error_path,"w")
 	lines = f.readlines()
-	for i in range( 20000,len(lines) ):
+	log_content = ""
+	for i in range( 50371,len(lines) ):
 		if( i==0 ):
 			continue
 		else:
@@ -37,8 +38,10 @@ def download( output ):
 			basicurl=lines[i].split("\t")[3].strip('\n')
 			url=lines[i].split("\t")[3]
 			app_url_name = basicurl.split("/")[-1]
+			if( app_url_name.startswith("com2") ):
+				app_url_name = app_url_name.replace("com2","com")
 			#print app_name+"\t"+basicurl
-			for j in range(1,5):	#可能网络堵塞，引起urlopen异常，可以多试几次
+			for j in range(1,6):	#可能网络堵塞，引起urlopen异常，可以多试几次
 				try:
 					print (str(i)+"_downloading..."+ url + "  ** file is : "+ output)
 					response = urllib2.urlopen(url,timeout=60)	#设置urlopen超时timeout时限，单位为秒
@@ -59,11 +62,12 @@ def download( output ):
 					else:
 						f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"unknow_error:unknow error"+"\n")	#其中可能含有正常apk
 					break
-				except urllib2.URLError, e:		#urlopen异常
+				except :		#urlopen异常
 					# print e.code,";"+e.reason 
 					if j<5:
 						continue
 					else:
-						f2.write(app_name+"\t"+basicurl+"\t"+store_name+"\t"+"exception_error:from urlopen exception"+"(the e.code is "+e.code+",the e.reason is "+e.reason+")"+"\n")
+						log_content += app_name+"\t"+basicurl+"\t"+store_name+"\t"+"exception_error:from urlopen exception"+"\n"
+	f2.write(log_content.strip('\n'))
 			
 download( localname )
