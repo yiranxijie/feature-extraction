@@ -7,9 +7,9 @@ import re
 import time
 
 
-localname="Z:/apkSample/50372/"
+localname="Z:/apkSample/153523/"
 txt_path = "Z:/apkSample/links/20170511.txt"
-error_path="Z:/apkSample/50372_log.txt"
+error_path="Z:/apkSample/153523.txt"
 
 
 def download( output ):
@@ -17,8 +17,8 @@ def download( output ):
 	f = open(txt_path,"r")  
 	f2=open(error_path,"w")
 	lines = f.readlines()
-	log_content = ""
-	for i in range( 50371,len(lines) ):
+	for i in range( 153523,len(lines) ):
+		log_content = ""
 		if( i==0 ):
 			continue
 		else:
@@ -28,15 +28,15 @@ def download( output ):
 				app_name += "_"+str( time.time() )
 			if( app_name.find("/") ): #包含目录符号
 				p=re.compile(r'\/')
-				app_name=p.sub('_',app_name)
+				app_name = p.sub('_',app_name)
 			if( app_name.find("&") ): #名字里面包含&符号
 				p=re.compile(r'&')
-				app_name=p.sub('_',app_name)
+				app_name = p.sub('_',app_name)
 			if( app_name.find(".") ): #名字里面包含.符号
-				p=re.compile(r'\.')
-				app_name=p.sub('_',app_name)
-			basicurl=lines[i].split("\t")[3].strip('\n')
-			url=lines[i].split("\t")[3]
+				p = re.compile(r'\.')
+				app_name = p.sub('_',app_name)
+			basicurl = lines[i].split("\t")[3].strip('\n')
+			url = lines[i].split("\t")[3]
 			app_url_name = basicurl.split("/")[-1]
 			if( app_url_name.startswith("com2") ):
 				app_url_name = app_url_name.replace("com2","com")
@@ -64,10 +64,12 @@ def download( output ):
 					break
 				except :		#urlopen异常
 					# print e.code,";"+e.reason 
-					if j<5:
+					if j<3:
 						continue
 					else:
-						log_content += app_name+"\t"+basicurl+"\t"+store_name+"\t"+"exception_error:from urlopen exception"+"\n"
-	f2.write(log_content.strip('\n'))
-			
+						log_content = app_name+"\t"+basicurl+"\t"+store_name+"\t"+"exception_error:from urlopen exception"+"\n"
+						break
+		
+		f2.write(log_content)	#怕出现突然关机、中断等类似意外情况，数据还没来得及写，所以数据就读一条写一条
+
 download( localname )
